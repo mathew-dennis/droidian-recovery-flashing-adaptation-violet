@@ -22,9 +22,9 @@ mount /data/rootfs.img /r;
 # Copy files
 ui_print "Copying device adaptation files...";
 
-cp -fpr data/droidian/data/70-violet.rules /r/etc/udev/rules.d/70-violet.rules;
-cp -fpr data/droidian/data/recovery-script.sh /r/usr/local/bin/recovery-script.sh; 
-cp -fpr data/droidian/data/resolv.conf /r/data/etc/resolv.conf;
+cp  /data/droidian/data/70-violet.rules /r/etc/udev/rules.d/70-violet.rules;
+cp  /data/droidian/data/recovery-script.sh /r/usr/local/bin/recovery-script.sh; 
+cp  /data/droidian/data/resolv.conf /r/data/etc/resolv.conf;
 
 #Run script to disable crashing services
 chroot /r /bin/bash /usr/local/bin/recovery-script.sh;

@@ -68,7 +68,7 @@ abort() { ui_print "$*"; umount /vendor; umount /data; exit 1; }
 show_progress 1.34 4;
 ui_print " ";
 ui_print "***";
-ui_print "Droidian GSI installer";
+ui_print "Droidian Adaptation package for Redmi Note 7 pro (unofficial)";
 ui_print "https://droidian.org";
 ui_print "***";
 ui_print " ";
@@ -90,7 +90,7 @@ mkdir -p /data/droidian;
 cd /data/droidian;
 
 # unzip busybox and rootfs
-ui_print "Installing GSI...";
+ui_print "Running script...";
 unzip -o "$ZIP";
 
 if [ $? != 0 -o -z "$(ls /data/droidian/tools)" ]; then

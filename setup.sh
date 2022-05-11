@@ -1,4 +1,11 @@
-# Droidian GSI installer Script
+# Droidian Adaptation for the Xiaomi Redmi note  pro (violet)
+# Flashing based on: https://github.com/droidian-releng/android-recovery-flashing-template
+
+# Contains fixes for:
+# 1. udev
+# 2. mask some crashing services
+# 3. wifi
+
 # https://droidian.org
 
 OUTFD=/proc/self/fd/$1;
@@ -7,39 +14,28 @@ VENDOR_DEVICE_PROP=`grep ro.product.vendor.device /vendor/build.prop | cut -d "=
 # ui_print <text>
 ui_print() { echo -e "ui_print $1\nui_print" > $OUTFD; }
 
-## GSI install
-mv /data/droidian/data/* /data/;
-
-# resize rootfs
-ui_print "Resizing rootfs to 8GB";
-e2fsck -fy /data/rootfs.img
-resize2fs -f /data/rootfs.img 8G
-
-mkdir /s;
 mkdir /r;
 
 # mount droidian rootfs
 mount /data/rootfs.img /r;
 
-# mount android gsi
-mount /r/var/lib/lxc/android/android-rootfs.img /s
+# Copy files
+ui_print "Copying device adaptation files...";
 
-# Set udev rules
-ui_print "Setting udev rules";
-cat /s/ueventd*.rc /vendor/ueventd*.rc | grep ^/dev | sed -e 's/^\/dev\///' | awk '{printf "ACTION==\"add\", KERNEL==\"%s\", OWNER=\"%s\", GROUP=\"%s\", MODE=\"%s\"\n",$1,$3,$4,$2}' | sed -e 's/\r//' > /data/70-droidian.rules;
+cp -fpr data/droidian/data/70-violet.rules /r/etc/udev/rules.d/70-violet.rules
+cp -fpr data/droidian/data/recovery-script.sh /r/usr/local/bin/recovery-script.sh 
+cp -fpr data/droidian/data/resolv.conf /r/data/etc/resolv.conf
 
-# umount android gsi
-umount /s;
+#Run script to disable crashing services
+chroot /r /bin/bash /usr/local/bin/recovery-script.sh
 
-# move udev rules inside rootfs
-mv /data/70-droidian.rules /r/etc/udev/rules.d/70-$VENDOR_DEVICE_PROP.rules;
+ui_print " thank you @ThomasHastings and @eugenio_g7 and everyone in the community...";
+
+#rm script as its work is done
+rm -f /r/usr/local/bin/recovery-script.sh 
 
 # umount rootfs
 umount /r;
-
-# halium initramfs workaround,
-# create symlink to android-rootfs inside /data
-if [ ! -e /data/android-rootfs.img ]; then
-	ln -s /halium-system/var/lib/lxc/android/android-rootfs.img /data/android-rootfs.img || true
-fi
-## end install
+exit 0;
+# flash boot.img
+#flash_image /dev/block/bootdevice/by-name/boot boot.img

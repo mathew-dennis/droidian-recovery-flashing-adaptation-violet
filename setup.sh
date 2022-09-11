@@ -26,6 +26,9 @@ cp  /data/droidian/data/70-violet.rules /r/etc/udev/rules.d/70-violet.rules;
 cp  /data/droidian/data/recovery-script.sh /r/usr/local/bin/recovery-script.sh; 
 cp  /data/droidian/data/resolv.conf /r/etc/resolv.conf;
 
+rm -f /r/usr/share/phosh/phoc.ini;
+cp /data/droidian/data/phoc.ini /r/usr/share/phosh/phoc.ini;
+
 #Run script to disable crashing services
 chroot /r /bin/bash /usr/local/bin/recovery-script.sh;
 
